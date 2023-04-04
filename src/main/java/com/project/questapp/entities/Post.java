@@ -2,6 +2,10 @@ package com.project.questapp.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import java.util.Date;
 
 @Entity
 @Table(name = "post")
@@ -9,13 +13,19 @@ import lombok.Data;
 public class Post {
 
     @Id
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
 
-    private long userId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="user_id", nullable=false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    User user;
 
-    private String title;
-
+    String title;
     @Lob
-    @Column(columnDefinition = "text")
-    private String text;
+    @Column(columnDefinition="text")
+    String text;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    Date createDate;
 }

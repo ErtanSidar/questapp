@@ -1,7 +1,12 @@
 package com.project.questapp.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import java.util.Date;
 
 @Entity
 @Table(name = "comments")
@@ -9,13 +14,25 @@ import lombok.Data;
 public class Comment {
 
     @Id
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
 
-    private long postId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="post_id", nullable=false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
+    Post post;
 
-    private long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="user_id", nullable=false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
+    User user;
 
     @Lob
-    @Column(columnDefinition = "text")
-    private String text;
+    @Column(columnDefinition="text")
+    String text;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    Date createDate;
 }
